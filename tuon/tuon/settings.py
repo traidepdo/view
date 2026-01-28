@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -115,10 +117,19 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
-
+BASE_DIR = Path(__file__).resolve().parent.parent
 STATIC_URL = 'static/'
+# ĐÂY LÀ ĐOÀN QUAN TRỌNG:
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'), # Bảo Django: "Hãy tìm ở thư mục static ngoài cùng nữa nhé"
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# Đăng nhập xong thì nhảy về trang chủ
+LOGIN_REDIRECT_URL = '/'
+
+# Nếu chưa đăng nhập mà truy cập trang yêu cầu quyền riêng tư thì đẩy về đây
+LOGIN_URL = 'login'

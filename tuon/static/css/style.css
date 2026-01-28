@@ -1,0 +1,420 @@
+
+/* Biến màu sắc */
+:root {
+    --main: #6c5ce7;
+    --dark: #2d3436;
+    --light: #f9f9f9;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', sans-serif; background: var(--light); color: var(--dark); overflow-x: hidden; }
+
+.container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+header{
+    height: 80px;
+    display: flex;
+    align-items: center;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+    transition: 0.5s;
+}
+/* Navbar mượt mà */
+header .container { display: flex; justify-content: space-between; width: 100%; align-items: center; }
+header .logo{
+    font-size: 24px; font-weight: bold;
+}
+header.sticky { background: white; box-shadow: 0 5px 20px rgba(0,0,0,0.1); height: 60px; }
+header nav{
+    display: flex;
+    justify-items: center;
+}
+header nav form {
+    display: flex;
+    align-items: center;
+    background: none; /* Cho cái form một cái nền */
+    border-radius: 20px;
+    overflow: hidden; /* Để input khi rộng 0px sẽ biến mất hoàn toàn */
+    transition: 0.4s;
+}
+
+header nav .search-input {
+    height: 30px;
+    width: 0px;       /* Mặc định ẩn */
+    border: none;
+    outline: none;
+    padding: 0;       /* Quan trọng: padding bằng 0 khi ẩn */
+    transition: 0.4s ease-in-out;
+}
+
+header nav .search-trigger {
+    /* BỎ position: absolute đi nhé */
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    color: var(--dark);
+}
+
+/* Hiệu ứng khi hover vào vùng search-box */
+header nav .search-box:hover .search-input {
+    width: 200px;
+    padding: 0 10px;
+}
+
+/* Thêm cái này để khi hover thì cả cái form có viền cho đẹp */
+header nav .search-box:hover form {
+    border: 1px solid var(--main);
+    box-shadow: 0 0 10px rgba(108, 92, 231, 0.2);
+    background: white;
+}
+/* Tùy chỉnh phần Hero */
+header nav a{
+    color: var(--dark);
+    text-decoration: none;
+    margin: 0px 10px;
+    font-size: 20px;
+    font-weight: 600;
+}
+.hero {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url("https://brand.assets.adidas.com/image/upload/f_auto,q_auto:best,fl_lossy/global_adiclub_refresh_membership_2025_evergreen_1_adiclub_banner_split_4_d_c23eaf0cff.jpg");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* Tạo hiệu ứng cuộn ảnh nhẹ */
+    text-align: center;
+}
+
+.hero-content a {
+    text-decoration: none;
+    color: white; /* Để màu trắng cho nổi trên nền ảnh */
+    opacity: 0;   /* Mặc định ẩn */
+    transform: translateY(20px); /* Đẩy xuống một chút */
+    transition: all 0.8s ease;    /* Hiệu ứng mượt */
+}
+
+/* Khi rê chuột vào vùng Hero */
+.hero:hover a {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.hero h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+    margin-bottom: 10px;
+}
+
+.hero p {
+    font-size: 1.5rem;
+    background: var(--main);
+    display: inline-block;
+    padding: 5px 20px;
+    border-radius: 50px;
+}
+
+.category{
+    height: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    padding: 40px 0px;
+    text-align: center;
+    gap: 25px;
+    width: 1200px;
+    justify-self: center;
+}
+.category .box-category{
+    height: 600px;
+    position: relative;
+    /*border-radius: 15px;*/
+    overflow: hidden;
+    box-shadow:
+        inset 2px 2px 10px rgba(0,0,0,0.1),
+        0 15px 35px rgba(108, 92, 231, 0.2);
+
+}
+.category .box-category button{
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 25px;
+    background: #c1c1c1;
+    border: none;
+    border-radius: 6px;
+}
+.category .box-category span{
+    display: block;
+    position: absolute;
+    bottom: 14%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 25px;
+    color: white;
+    font-weight: 700;
+
+}
+.category .box-category img{
+    width: 100%;
+    object-fit: cover;
+    height: 100%;
+}
+.products {
+    width: 1200px;
+    margin: 0px 0px;
+    justify-self: center;
+    padding: 0px;
+}
+.products .section-title{
+    text-align: center;
+    margin-top: 20px;
+    font-size: 30px;
+}
+.product-grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 15px;
+}
+.reveal {
+    background: #fff; /* Chuyển sang trắng tinh khôi cho sang */
+    border-radius: 4px; /* Bo góc cực nhẹ (kiểu tối giản) */
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    position: relative;
+    border: 1px solid transparent; /* Tránh bị nhảy khung khi hover */
+    margin-top: 15px ;
+}
+
+.reveal:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08); /* Bóng đổ mịn và sâu hơn */
+    border-color: #eee;
+}
+
+.reveal .card-img {
+    height: 420px; /* Tăng nhẹ chiều cao để tôn dáng áo dài */
+    position: relative;
+    overflow: hidden;
+}
+
+.reveal .card-img img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    transition: transform 0.8s ease;
+}
+
+.reveal:hover .card-img img {
+    transform: scale(1.08); /* Hiệu ứng zoom nhẹ vào thớ vải */
+}
+
+/* Phần thông tin sản phẩm */
+.reveal .card-info {
+    padding: 15px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.reveal .card-info h3 {
+    font-size: 15px;
+    font-weight: 500;
+    text-transform: uppercase; /* Chữ in hoa nhẹ nhàng */
+    letter-spacing: 1px;
+    color: #333;
+}
+
+.reveal .card-info p {
+    font-weight: 600;
+    color: #c0392b; /* Màu đỏ đô sang trọng cho giá tiền */
+}
+
+/* Ẩn nút "Thêm vào giỏ" và hiện ra khi hover */
+.reveal .add-cart {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: 0.3s ease;
+    background: var(--dark);
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    font-size: 12px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.reveal:hover .add-cart {
+    opacity: 1;
+    transform: translateY(0);
+}
+.products .btn-all{
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-size: 20px;
+    color: black;
+    text-decoration: none;
+    transition: 0.3s ease;
+
+}
+.products .btn-all:hover{
+    transform: scale(1.1);
+}
+
+
+
+footer {
+    background: var(--dark);
+    color: #fff;
+    padding: 60px 0 20px;
+    margin-top: 50px;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1.5fr; /* Cột giới thiệu rộng hơn */
+    gap: 50px;
+    margin-bottom: 40px;
+}
+
+.footer-col h4 {
+    font-size: 18px;
+    margin-bottom: 20px;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+/* Dấu gạch dưới tiêu đề cột */
+.footer-col h4::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background: var(--main);
+}
+
+.footer-desc {
+    line-height: 1.6;
+    color: #ccc;
+    margin: 20px 0;
+}
+
+.footer-col ul {
+    list-style: none;
+}
+
+.footer-col ul li {
+    margin-bottom: 12px;
+}
+
+.footer-col ul li a {
+    color: #ccc;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.footer-col ul li a:hover {
+    color: var(--main);
+    padding-left: 5px;
+}
+
+/* Form nhận tin */
+.footer-form {
+    display: flex;
+    margin-top: 15px;
+}
+
+.footer-form input {
+    padding: 10px;
+    border: none;
+    border-radius: 4px 0 0 4px;
+    outline: none;
+    width: 100%;
+}
+
+.footer-form button {
+    background: var(--main);
+    color: white;
+    border: none;
+    padding: 0 20px;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.footer-form button:hover {
+    background: #5649c0;
+}
+
+.footer-bottom {
+    text-align: center;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 20px;
+    font-size: 14px;
+    color: #888;
+}
+
+
+
+
+/*cuộn*/
+/* Trạng thái ẩn */
+.card.reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.7s cubic-bezier(0.2, 1, 0.3, 1);
+    will-change: transform, opacity; /* Giúp trình duyệt chạy mượt hơn */
+}
+
+/* Trạng thái hiện */
+.card.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/*cuộn category*/
+/* Trạng thái chờ: Nằm ở trên và mờ đi */
+.box-category.reveal {
+    opacity: 0;
+    transform: translateY(-50px); /* Kéo ngược lên trên */
+    transition: all 0.8s cubic-bezier(0.2, 1, 0.3, 1);
+}
+
+/* Trạng thái khi cuộn tới: Rớt xuống vị trí gốc */
+/* Thiết lập chung cho mọi thứ có class reveal */
+.reveal {
+    opacity: 0;
+    transition: all 0.7s cubic-bezier(0.2, 1, 0.3, 1);
+    will-change: transform, opacity;
+}
+
+/* Category: Khi chưa active thì nằm ở trên (-50px) */
+.box-category.reveal:not(.active) {
+    transform: translateY(-50px);
+}
+
+/* Sản phẩm: Khi chưa active thì nằm ở dưới (40px) */
+.card.reveal:not(.active) {
+    transform: translateY(40px);
+}
+
+/* Khi đã active: Về vị trí 0 cho cả hai */
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Hiệu ứng rơi từng cái (Staggered) */
+.category .box-category:nth-child(1) { transition-delay: 0.1s; }
+.category .box-category:nth-child(2) { transition-delay: 0.3s; }
+.category .box-category:nth-child(3) { transition-delay: 0.5s; }

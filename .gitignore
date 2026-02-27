@@ -19,6 +19,11 @@ app/ml/*.csv
 db.sqlite3
 __pycache__/
 *.pyc
-/media/
-/static/
 .env
+
+# Chỉ giữ lại cấu hình thư mục static/media, không đẩy nội dung bên trong
+/static/*
+!/static/.gitkeep
+
+/media/*
+!/media/.gitkeep

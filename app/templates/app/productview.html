@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block body_class %}product-page{% endblock %}
+
+{% block content %}
+<div class="container product-wrapper">
+    <div class="product-main">
+        <div class="product-gallery">
+            <div class="thumbnail-list">
+                <img src="https://picsum.photos/id/20/400/400" alt="thumb1" onclick="changeImage(this)" class="active">
+                <img src="https://picsum.photos/id/21/400/400" alt="thumb2" onclick="changeImage(this)">
+                <img src="https://picsum.photos/id/22/400/400" alt="thumb3" onclick="changeImage(this)">
+            </div>
+            <div class="main-image">
+                <img id="featured" src="https://picsum.photos/id/20/400/400" alt="Sản phẩm chính">
+            </div>
+        </div>
+
+        <div class="product-info">
+            <h1>Giày Sneaker Cao Cấp 2024</h1>
+            <p class="price">1.250.000 ₫</p>
+
+            <div class="options">
+                <label>Màu sắc:</label>
+                <select>
+                    <option>Trắng phối Xanh</option>
+                    <option>Đen Basic</option>
+                    <option>Xám Khói</option>
+                </select>
+
+                <label>Kích thước (Size):</label>
+                <select>
+                    <option>39</option>
+                    <option>40</option>
+                    <option>41</option>
+                    <option>42</option>
+                </select>
+            </div>
+
+            <div class="description">
+                <h3>Mô tả sản phẩm</h3>
+                <p>Đây là dòng sản phẩm mới nhất với chất liệu thoáng khí, đế cao su chống trượt cực tốt.</p>
+                <ul>
+                    <li>Chất liệu: Da tổng hợp cao cấp</li>
+                    <li>Đế: Cao su đúc nguyên khối</li>
+                    <li>Bảo hành: 6 tháng</li>
+                </ul>
+            </div>
+
+            <button style="background: #28a745; color: white; border: none; padding: 15px 30px; font-size: 18px; border-radius: 5px; cursor: pointer; margin-top: 20px;">
+                Thêm vào giỏ hàng
+            </button>
+        </div>
+    </div>
+    <section class="products container">
+        <div class="product-new">
+            <h2 class="section-title">Sản phảm tương tự</h2>
+            <div class="product-grid">
+                <div class="card reveal">
+                    <div class="card-img">
+                        <img src="https://bizweb.dktcdn.net/100/236/196/products/7a315151a9247d7a2435100.jpg?v=1695731841957" alt="">
+                    </div>
+                    <div class="card-info">
+                        <h3>Phone Ultra Z</h3>
+                        <p>25.990.000đ</p>
+                        <a href="" class="add-cart">Xem chi tiết</a>
+                    </div>
+                </div>
+                <div class="card reveal">
+                    <div class="card-img">
+                        <img src="https://bizweb.dktcdn.net/100/236/196/products/7a315151a9247d7a2435100.jpg?v=1695731841957" alt="">
+                    </div>
+                    <div class="card-info">
+                        <h3>Laptop Pro M5</h3>
+                        <p>42.500.000đ</p>
+                        <button class="add-cart">Thêm vào giỏ</button>
+                    </div>
+                </div>
+                <div class="card reveal">
+                    <div class="card-img">
+                        <img src="https://bizweb.dktcdn.net/100/236/196/products/7a315151a9247d7a2435100.jpg?v=1695731841957" alt="">
+                    </div>
+                    <div class="card-info">
+                        <h3>Watch Series 2</h3>
+                        <p>8.200.000đ</p>
+                        <button class="add-cart">Thêm vào giỏ</button>
+                    </div>
+                </div>
+                <div class="card reveal">
+                    <div class="card-img">
+                        <img src="https://bizweb.dktcdn.net/100/236/196/products/7a315151a9247d7a2435100.jpg?v=1695731841957" alt="">
+                    </div>
+                    <div class="card-info">
+                        <h3>Watch Series 2</h3>
+                        <p>8.200.000đ</p>
+                        <button class="add-cart">Thêm vào giỏ</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+
+
+<script>
+    function changeImage(element) {
+        document.getElementById('featured').src = element.src;
+        let thumbnails = document.querySelectorAll('.thumbnail-list img');
+        thumbnails.forEach(img => img.classList.remove('active'));
+        element.classList.add('active');
+    }
+</script>
+{% endblock %}

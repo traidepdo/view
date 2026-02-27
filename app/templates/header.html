@@ -1,0 +1,67 @@
+{% load static %}
+<header id="main-nav">
+        <div class="container">
+            <div class="logo">TMDN <span>SHOP</span></div>
+            <nav>
+                <div class="search-box">
+                    <form action="/search/" method="get">
+                        <input type="text" name="q" placeholder="Tìm kiếm sản phẩm..." class="search-input">
+                        <button class="search-trigger">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search">
+                                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+                <a href="{% url 'home' %}">Trang chủ</a>
+                <div class="dropdown">
+                    <a href="#" class="dropdown-trigger">Danh mục</a>
+                    <div class="mega-menu">
+                        <div class="mega-col">
+                            <h4>Thời Trang Nam</h4>
+                            <ul>
+                                <li><a href="#">Áo sơ mi</a></li>
+                                <li><a href="#">Áo thun</a></li>
+                                <li><a href="#">Quần Jean</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="mega-col">
+                            <h4>Thời Trang Nữ</h4>
+                            <ul>
+                                <li><a href="#">Váy lụa</a></li>
+                                <li><a href="#">Đầm dự tiệc</a></li>
+                                <li><a href="#">Chân váy</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="mega-col">
+                            <h4>Phụ Kiện</h4>
+                            <ul>
+                                <li><a href="#">Túi xách</a></li>
+                                <li><a href="#">Thắt lưng</a></li>
+                                <li><a href="#">Đồng hồ</a></li>
+                            </ul>
+                        </div>
+                    </div>`
+                </div>
+                <a href="{% url 'cart' %}" class="cart">Giỏ
+                <span class="total">{{ cart_total_quantity }}</span>
+                </a>
+                {% if user.is_authenticated %}
+                    <div class="user-profile">
+                    <span class="material-symbols-outlined">contacts_product</span>
+                        <div class="profile">
+                            <span>Chào mừng {{ user.username }}</span>
+                            <ul class="name">
+
+                                <li><a href="{% url 'logout' %}" class="btn-auth">Thoát</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn-auth">Đăng nhập</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>

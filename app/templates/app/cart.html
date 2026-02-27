@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block body_class %}product-cart{% endblock %}
+
+{% block content %}
+<div class="cart-container product-wrapper">
+    <h1 class="cart-title">Giỏ hàng của bạn</h1>
+
+    <div class="cart-wrapper">
+        <div class="cart-items">
+            <div class="cart-header">
+                <div class="ch-product">Sản phẩm</div>
+                <div class="ch-price">Giá</div>
+                <div class="ch-quantity">Số lượng</div>
+                <div class="ch-total">Tổng</div>
+                <div class="ch-action"></div>
+            </div>
+
+            {% if cart_items %}
+                {% for item in cart_items %}
+                <div class="cart-item">
+                    <div class="item-info">
+                        <img src="{{ item.product.images.all.0.image.url }}" alt="{{ item.product.name }}" class="item-img">
+                        <div class="item-detail">
+                            <h3 class="item-name">{{ item.product.name }}</h3>
+                            <span class="item-variant">Màu: {{ item.color }}, Size: {{ item.size }}</span>
+                        </div>
+                    </div>
+                    <div class="item-price">{{ item.product.base_price }}đ</div>
+                    <div class="item-quantity">
+                    <div class="qty-input">
+                        <a href="{% url 'update_cart' item.key 'decrease' %}" class="qty-btn" style="text-decoration: none;">-</a>
+
+                        <input type="number" value="{{ item.quantity }}" readonly>
+
+                        <a href="{% url 'update_cart' item.key 'increase' %}" class="qty-btn" style="text-decoration: none;">+</a>
+                    </div>
+                </div>
+
+                <div class="item-total">{{ item.total_item_price }}đ</div>
+
+                <div class="item-action">
+                    <a href="{% url 'remove_cart' item.key %}" class="btn-remove" style="text-decoration: none; color: red;">&times;</a>
+                </div>
+            </div>
+                {% endfor %}
+            {% else %}
+                <p>Giỏ hàng trống. <a href="{% url 'home' %}">Mua sắm ngay!</a></p>
+            {% endif %}
+        </div>
+
+        <div class="cart-summary">
+            <div class="summary-card">
+                <h3>Tóm tắt đơn hàng</h3>
+                <div class="summary-line">
+                    <span>Tạm tính</span>
+                    <span>{{ total_price }}đ</span>
+                </div>
+                <div class="summary-total">
+                    <span>Tổng cộng</span>
+                    <span class="total-amount">{{ total_price }}đ</span>
+                </div>
+                <button class="btn-checkout" {% if not cart_items %}disabled{% endif %}>Thanh toán ngay</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

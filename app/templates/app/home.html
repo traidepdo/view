@@ -1,0 +1,198 @@
+{% load static humanize %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Gemini Store | Thuần CSS & JS</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=contacts_product" />
+</head>
+<body>
+    <header id="main-nav">
+        <div class="container">
+            <div class="logo">TMDN <span>SHOP</span></div>
+            <nav>
+                <div class="search-box">
+                    <form action="/search/" method="get">
+                        <input type="text" name="q" placeholder="Tìm kiếm sản phẩm..." class="search-input">
+                        <button class="search-trigger">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search">
+                                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+                <a href="{% url 'home' %}">Trang chủ</a>
+                <div class="dropdown">
+                    <a href="#" class="dropdown-trigger">Danh mục</a>
+                    <div class="mega-menu">
+                        <div class="mega-col">
+                            <h4>Thời Trang Nam</h4>
+                            <ul>
+                                <li><a href="#">Áo sơ mi</a></li>
+                                <li><a href="#">Áo thun</a></li>
+                                <li><a href="#">Quần Jean</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="mega-col">
+                            <h4>Thời Trang Nữ</h4>
+                            <ul>
+                                <li><a href="#">Váy lụa</a></li>
+                                <li><a href="#">Đầm dự tiệc</a></li>
+                                <li><a href="#">Chân váy</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="mega-col">
+                            <h4>Phụ Kiện</h4>
+                            <ul>
+                                <li><a href="#">Túi xách</a></li>
+                                <li><a href="#">Thắt lưng</a></li>
+                                <li><a href="#">Đồng hồ</a></li>
+                            </ul>
+                        </div>
+                    </div>`
+                </div>
+                <a href="{% url 'cart' %}" class="cart">Giỏ
+                <span class="total">{{ cart_total_quantity }}</span>
+                </a>
+                {% if user.is_authenticated %}
+                    <div class="user-profile">
+                    <span class="material-symbols-outlined">contacts_product</span>
+                        <div class="profile">
+                            <span>Chào mừng {{ user.username }}</span>
+                            <ul class="name">
+
+                                <li><a href="{% url 'logout' %}" class="btn-auth">Thoát</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn-auth">Đăng nhập</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+    <section class="hero">
+        <div class="hero-content">
+            <a href="">
+                <h1 class="reveal-text">Lên đồ xinh - Lung linh xuống phố</h1>
+                <a href="/category/?c=all" class="fade-in">Khám phá ngay</a>
+            </a>
+        </div>
+        <div class="hero-shape"></div>
+    </section>
+
+    <section class="category">
+        <div class="box-category reveal">
+            <a href="http://127.0.0.1:8000/category/?c=Thể Thao">
+                <img src="https://image.hm.com/assets/hm/1c/e8/1ce8516dd0b69ecb4dbb57d1420644581850ac4a.jpg?imwidth=1260" alt="">
+                <span>THỂ THAO</span>
+                <button>Xem ngay</button>
+            </a>
+        </div>
+        <div class="box-category reveal">
+            <a href="/category/?c=Thanh Lịch">
+                <img src="https://img.vuahanghieu.com/unsafe/0x0/left/top/smart/filters:quality(90)/https://admin.vuahanghieu.com/upload/news/content/2019/11/trang-phuc-cho-quy-ong-tiec-cuoi-nam-vhh-7-jpg-1573200832-08112019151352.jpg" alt="">
+                <span>THANH LỊCH</span>
+                <button>Xem ngay</button>
+            </a>
+        </div>
+        <div class="box-category reveal">
+            <a href="/category/?c=Cổ Điển">
+                <span>CỔ ĐIỂN</span>
+                <button>Xem ngay</button>
+                <img src="https://file.huengaynay.vn/data2/image/fckeditor/upload/2021/20211022/images/vin%202.jpg" alt="">
+            </a>
+        </div>
+    </section>
+    <section class="products container">
+        <div class="product-new">
+            <h2 class="section-title">Sản phẩm mới</h2>
+
+                <div class="product-grid">
+                    {% for pn in products_news %}
+                    <div class="card reveal">
+                        {% for i in pn.images.all %}
+                            {% if i.is_feature %}
+                                <div class="card-img">
+                                    <img src="{{ i.image.url }}" alt="">
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                        <div class="card-info">
+                            <h3>{{ pn.name }}</h3>
+                            <p>{{ pn.base_price|floatformat:0|intcomma }} ₫</p>
+                            <a href="{% url 'product_detail' pn.id %}" class="add-cart">Xem chi tiết</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+        </div>
+
+        <div class="all-product">
+            <h2 class="section-title">Tất cả sản phẩm</h2>
+            <a href="/category/?c=all" class="btn-all">Xem tất cả</a>
+
+            <div class="product-grid">
+                {% for product in products %}
+                    <div class="card reveal">
+                        {% for img in product.images.all %}
+                            {% if img.is_feature %}
+                                <div class="card-img">
+                                    <img src="{{ img.image.url }}" alt="{{ product.name }}">
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+
+                        <div class="card-info">
+                            <h3>{{ product.name }}</h3>
+                            <p>{{ product.base_price|floatformat:0|intcomma }} ₫</p>
+                            <a href="{% url 'product_detail' product.id %}" class="add-cart">Xem chi tiết</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+</div>
+    </section>
+    <footer>
+        <div class="container footer-grid">
+                <div class="footer-col">
+                    <div class="logo">GEMINI <span>SHOP</span></div>
+                    <p class="footer-desc">Tự hào mang đến những bộ trang phục thiết kế tinh tế, giúp bạn tự tin tỏa sáng mỗi ngày.</p>
+                    <div class="social-links">
+                        <a href="#">Fb</a>
+                        <a href="#">Ig</a>
+                        <a href="#">Tk</a>
+                    </div>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Chính sách</h4>
+                    <ul>
+                        <li><a href="#">Hướng dẫn chọn size</a></li>
+                        <li><a href="#">Chính sách đổi trả</a></li>
+                        <li><a href="#">Hệ thống cửa hàng</a></li>
+                        <li><a href="#">Tuyển dụng</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Newsletter</h4>
+                    <p>Đăng ký để nhận thông báo về bộ sưu tập mới nhất.</p>
+                    <form class="footer-form">
+                        <input type="email" placeholder="Email của bạn...">
+                        <button type="submit">Gửi</button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Gemini Shop. All rights reserved. Design with ❤️</p>
+            </div>
+    </footer>
+
+    <script src="{% static 'js/scrips.js' %}"></script>
+</body>
+</html>

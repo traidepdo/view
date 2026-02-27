@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block body_class %}product-search{% endblock %}
+
+{% block content %}
+<div class="container product-wrapper">
+    <section class="top">
+        <div class="filter-wrapper">
+            <div class="search-info">
+                <h2>Kết quả tìm kiếm</h2>
+                <p>Tìm thấy <strong>12</strong> sản phẩm</p>
+            </div>
+
+            <div class="filter-controls">
+                <div class="select-group">
+                    <label for="sort-select">Sắp xếp theo:</label>
+                    <select id="sort-select">
+                        <option value="newest">Mới nhất</option>
+                        <option value="oldest">Cũ nhất</option>
+                        <option value="price-asc">Giá: Thấp đến Cao</option>
+                        <option value="price-desc">Giá: Cao đến Thấp</option>
+                    </select>
+                </div>
+                <button type="button" class="btn-filter" onclick="applyFilter()">
+                    <i class="fas fa-filter"></i> Lọc ngay
+                </button>
+            </div>
+        </div>
+    </section>
+    <section class="products container">
+        <div class="product-new">
+{#            <h2 class="section-title">Kết quả tìm kiếm</h2>#}
+
+            <div class="product-grid">
+                {% for p in result %}
+                <div class="card reveal">
+                    {% for img in p.images.all %}
+                        {% if img.is_feature %}
+                            <div class="card-img">
+                                <img src="{{ img.image.url }}" alt="">
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    <div class="card-info">
+                        <h3>{{ p.name }}</h3>
+                        <p>{{ p.base_price|floatformat:0|intcomma }} ₫</p>
+                        <button class="add-cart">Thêm vào giỏ</button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+        </div>
+    </section>
+</div>
+
+
+
+<script>
+    function applyFilter() {
+        const sortValue = document.getElementById('sort-select').value;
+        // Ví dụ: chuyển hướng trang với tham số lọc
+        {#window.location.href = `/search?q=phone&sort=${sortValue}`;#}
+        window.location.href = `/search`;
+    }
+</script>
+{% endblock %}

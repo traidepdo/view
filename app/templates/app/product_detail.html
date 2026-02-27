@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block body_class %}product-page{% endblock %}
+
+{% block content %}
+<div class="container product-wrapper">
+    <div class="product-main">
+        <div class="product-gallery">
+            <div class="thumbnail-list">
+                {% for p_image in product.images.all %}
+                    <img src="{{ p_image.image.url }}"
+                         alt="{{ product.name }}"
+                         onclick="changeImage(this)"
+                         class="{% if p_image.is_feature %}active{% endif %}">
+                {% endfor %}
+            </div>
+            <div class="main-image">
+                {% for p_image in product.images.all %}
+                    {% if p_image.is_feature %}
+                        <img id="featured" src="{{ p_image.image.url }}" alt="Sản phẩm chính">
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="product-info">
+            <form method="post" action="{% url 'add_cart' %}">
+                {% csrf_token %}
+                <input type="hidden" name="product_id" value="{{ product.id }}">
+                <h1>{{ product.name }}</h1>
+                <p class="price">{{ product.base_price|floatformat:0|intcomma }} ₫ </p>
+
+                <div class="options">
+                    <div style="margin-bottom: 15px;">
+                        <label for="color" style="display: block; font-weight: bold;">Màu sắc:</label>
+                        <select name="color" id="color" style="padding: 8px; width: 200px; border-radius: 4px;">
+                            {% for variant in product.variants.all|dictsort:"color" %}
+                                {% ifchanged variant.color %}
+                                    <option value="{{ variant.color }}">{{ variant.color }}</option>
+                                {% endifchanged %}
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label for="size" style="display: block; font-weight: bold;">Kích thước (Size):</label>
+                        <select name="size" id="size" style="padding: 8px; width: 200px; border-radius: 4px;">
+                            {% for variant in product.variants.all|dictsort:"size" %}
+                                {% ifchanged variant.size %}
+                                    <option value="{{ variant.size }}">{{ variant.size }}</option>
+                                {% endifchanged %}
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label for="quantity" style="display: block; font-weight: bold;">Số lượng:</label>
+                        <input type="number" name="quantity" id="quantity"
+                               value="1" min="1"
+                               style="padding: 8px; width: 80px; border-radius: 4px; border: 1px solid #ccc;">
+                    </div>
+                </div>
+
+                <div class="description">
+                    <h3>Mô tả sản phẩm</h3>
+                    <p>{{ product.description }}</p>
+                </div>
+
+                <button type="submit" style="background: #28a745; color: white; border: none; padding: 15px 30px; font-size: 18px; border-radius: 5px; cursor: pointer; margin-top: 20px;">
+                    Thêm vào giỏ hàng
+                </button>
+            </form>
+        </div>
+    </div>
+<section class="products container">
+    <div class="product-new">
+        <h2 class="section-title">Sản phẩm tương tự</h2>
+
+        <div class="product-grid">
+            {% for item in recommend_products %}
+            <div class="card reveal">
+
+                <div class="card-img">
+                    {% with item.images.all|first as img %}
+                        {% if img %}
+                            <img src="{{ img.image.url }}" alt="{{ item.name }}">
+                        {% else %}
+                            <img src="/static/images/no-image.png" alt="No image">
+                        {% endif %}
+                    {% endwith %}
+                </div>
+
+                <div class="card-info">
+                    <h3>{{ item.name }}</h3>
+
+                    <p class="price">
+                        {{ item.base_price|floatformat:0|intcomma }} đ
+                    </p>
+
+                    <a href="{% url 'product_detail' item.id %}" class="add-cart">
+                        Xem chi tiết
+                    </a>
+                </div>
+
+            </div>
+            {% empty %}
+                <p>Không có sản phẩm tương tự.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+</div>
+
+
+
+<script>
+    function changeImage(element) {
+        document.getElementById('featured').src = element.src;
+        let thumbnails = document.querySelectorAll('.thumbnail-list img');
+        thumbnails.forEach(img => img.classList.remove('active'));
+        element.classList.add('active');
+    }
+</script>
+{% endblock %}

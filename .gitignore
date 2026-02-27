@@ -1,0 +1,24 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Ignored default folder with query files
+/queries/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+
+# --- AI Model & Data (Tránh đẩy file nặng lên GitHub) ---
+app/ml/tfidf_model_1.pkl
+app/ml/*.csv
+*.pkl_1
+*.pkl
+
+# --- Django Defaults ---
+db.sqlite3
+__pycache__/
+*.pyc
+/media/
+/static/
+.env

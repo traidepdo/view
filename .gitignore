@@ -1,29 +1,18 @@
-# Default ignored files
+# --- Chặn cấu hình cá nhân của PyCharm ---
+.idea/
 /shelf/
 /workspace.xml
-# Ignored default folder with query files
 /queries/
-# Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
-# Editor-based HTTP Client requests
 /httpRequests/
 
-# --- AI Model & Data (Tránh đẩy file nặng lên GitHub) ---
+# --- Chặn file model NẶNG (BẮT BUỘC để không bị lỗi 422) ---
 app/ml/tfidf_model_1.pkl
-app/ml/*.csv
-*.pkl_1
-*.pkl
 
-# --- Django Defaults ---
-db.sqlite3
+# --- Chặn file rác hệ thống và bảo mật ---
 __pycache__/
 *.pyc
 .env
 
-# Chỉ giữ lại cấu hình thư mục static/media, không đẩy nội dung bên trong
-/static/*
-!/static/.gitkeep
-
-/media/*
-!/media/.gitkeep
+# ĐÃ MỞ KHÓA: db.sqlite3, /media/, /static/ sẽ được đẩy lên hết

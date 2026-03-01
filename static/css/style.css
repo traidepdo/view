@@ -507,6 +507,7 @@ footer {
     margin-left: 24px;
     position: relative;
     transition: color 0.3s ease;
+    color: black;
 }
 
 #main-nav nav a:hover {

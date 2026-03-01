@@ -4,8 +4,8 @@ from django.contrib.auth import login, logout  # Import thêm cái này để đ
 from .forms import CustomerSignupForm  # Import cái Form bạn vừa tạo
 from .models import Product, ProductImage
 from django.db.models import Q
-import pickle
-import os
+#phân trang
+from django.core.paginator import Paginator
 
 import os
 import gdown
@@ -37,7 +37,7 @@ def logout_view(request):
     return redirect('home')
 def home(request):
     products_news = Product.objects.all().order_by('-id')[:4]
-    products = Product.objects.filter(is_activate=True).prefetch_related('images').order_by('-id')
+    products = Product.objects.filter(is_activate=True).prefetch_related('images').order_by('?')[:4]
     return render(request, 'app/home.html', {
         'products': products,
         'products_news': products_news
@@ -50,15 +50,29 @@ def search(request):
     return render(request, 'app/search.html', {
         'result': result
     })
+
+
 def category(request):
     query = request.GET.get('c', '')
-    result = Product.objects.none()
-    if query == 'all':
-        result = Product.objects.all()
-    elif (query):
-        result = Product.objects.filter(category__name__icontains=query).distinct()
+
+    if query == 'all' or not query:
+        result_list = Product.objects.filter(is_activate=True)
+    else:
+        result_list = Product.objects.filter(
+            category__name__icontains=query,
+            is_activate=True
+        ).distinct()
+
+    # Sắp xếp và tối ưu query ảnh
+    result_list = result_list.prefetch_related('images').order_by('-id')
+
+    paginator = Paginator(result_list, 12)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     return render(request, 'app/search.html', {
-        'result': result
+        'result': page_obj,
+        'query': query  # Gửi biến này để template dùng trong link phân trang
     })
 def product_view(request):
     return render(request, 'app/productview.html',{})

@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load humanize %}
 {% block body_class %}product-cart{% endblock %}
 
 {% block content %}
@@ -26,7 +26,7 @@
                             <span class="item-variant">Màu: {{ item.color }}, Size: {{ item.size }}</span>
                         </div>
                     </div>
-                    <div class="item-price">{{ item.product.base_price }}đ</div>
+                    <div class="item-price">{{ item.product.base_price|floatformat:0|intcomma }}đ</div>
                     <div class="item-quantity">
                     <div class="qty-input">
                         <a href="{% url 'update_cart' item.key 'decrease' %}" class="qty-btn" style="text-decoration: none;">-</a>
@@ -37,7 +37,7 @@
                     </div>
                 </div>
 
-                <div class="item-total">{{ item.total_item_price }}đ</div>
+                <div class="item-total">{{ item.total_item_price|floatformat:0|intcomma  }}đ</div>
 
                 <div class="item-action">
                     <a href="{% url 'remove_cart' item.key %}" class="btn-remove" style="text-decoration: none; color: red;">&times;</a>
@@ -54,11 +54,11 @@
                 <h3>Tóm tắt đơn hàng</h3>
                 <div class="summary-line">
                     <span>Tạm tính</span>
-                    <span>{{ total_price }}đ</span>
+                    <span>{{ total_price|floatformat:0|intcomma }}đ</span>
                 </div>
                 <div class="summary-total">
                     <span>Tổng cộng</span>
-                    <span class="total-amount">{{ total_price }}đ</span>
+                    <span class="total-amount">{{ total_price|floatformat:0|intcomma }}đ</span>
                 </div>
                 <button class="btn-checkout" {% if not cart_items %}disabled{% endif %}>Thanh toán ngay</button>
             </div>

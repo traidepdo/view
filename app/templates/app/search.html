@@ -73,7 +73,7 @@
                     <div class="card-info">
                         <h3>{{ p.name }}</h3>
                         <p>{{ p.base_price|floatformat:0|intcomma }} ₫</p>
-                        <button class="add-cart">Thêm vào giỏ</button>
+                        <a href="{% url 'product_detail' p.id %}" class="add-cart">Xem chi tiết</a>
                     </div>
                 </div>
                 {% endfor %}

@@ -50,8 +50,6 @@ def search(request):
     return render(request, 'app/search.html', {
         'result': result
     })
-
-
 def category(request):
     query = request.GET.get('c', '')
 
@@ -62,10 +60,8 @@ def category(request):
             category__name__icontains=query,
             is_activate=True
         ).distinct()
-
     # Sắp xếp và tối ưu query ảnh
     result_list = result_list.prefetch_related('images').order_by('-id')
-
     paginator = Paginator(result_list, 12)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)

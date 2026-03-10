@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block body_class %}check_out{% endblock %}
+
+{% block content %}
+<div class="container product-wrapper" style="max-width: 800px; margin: 40px auto;">
+    <h2 style="text-align: center; color: #333; font-weight: bold;">THÔNG TIN GIAO HÀNG</h2>
+    <hr>
+
+    <form method="POST" id="checkout-form">
+        {% csrf_token %}
+
+        <div style="margin-bottom: 15px;">
+            <label>Họ và tên người nhận:</label>
+            <input type="text" name="full_name" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd;" required>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label>Số điện thoại:</label>
+            <input type="text" name="phone" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd;" required>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label>Tỉnh/Thành phố:</label>
+            <select name="province" id="province-select" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd;" required>
+                <option value="" data-fee="0">-- Chọn tỉnh thành để tính phí ship --</option>
+                {% for p in provinces %}
+                    <option value="{{ p.id }}" data-fee="{{ p.shipping_fee }}">{{ p.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label>Địa chỉ nhận hàng:</label>
+            <textarea name="address" rows="3" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd;" required></textarea>
+        </div>
+
+        <div style="margin: 25px 0; padding: 15px; border: 1px solid #e2e8f0; border-radius: 8px; background: #fff;">
+            <h4 style="margin-top: 0; margin-bottom: 15px;">Phương thức thanh toán:</h4>
+            <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px; cursor: pointer; padding: 10px; border: 1px solid #eee; border-radius: 5px;">
+                <input type="radio" name="payment_method" value="cod" checked>
+                <span>💵 Thanh toán khi nhận hàng (COD)</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 10px; border: 1px solid #eee; border-radius: 5px;">
+                <input type="radio" name="payment_method" value="qr">
+                <span>💳 Chuyển khoản ngân hàng (Quét mã QR)</span>
+            </label>
+        </div>
+
+        <div style="background: #f9f9f9; padding: 20px; border-radius: 10px; margin-top: 20px; border: 1px solid #eee;">
+            <h4 style="margin-top: 0;">Chi tiết thanh toán:</h4>
+
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                <span>Tiền hàng:</span>
+                <span><strong>{{ total_product_price|floatformat:0|intcomma }}đ</strong></span>
+            </div>
+
+            {% if voucher_discount > 0 %}
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px; color: #16a34a;">
+                <span>Giảm giá Voucher:</span>
+                <span>-{{ voucher_discount|floatformat:0|intcomma }}đ</span>
+            </div>
+            {% endif %}
+
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px; color: #666;">
+                <span>Phí vận chuyển:</span>
+                <span id="shipping-fee-display">0đ</span>
+            </div>
+
+            <hr style="border: none; border-top: 1px dashed #ccc;">
+
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-weight: bold;">TỔNG CỘNG:</span>
+                <strong style="color: #ae2070; font-size: 1.5rem;" id="final-total-display">
+                    {{ temp_final_total|floatformat:0|intcomma }}đ
+                </strong>
+            </div>
+
+            <button type="submit" style="width: 100%; background: #ae2070; color: white; border: none; padding: 15px; font-weight: bold; cursor: pointer; border-radius: 5px; margin-top: 20px; font-size: 1.1rem;">
+                XÁC NHẬN ĐẶT HÀNG
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    const provinceSelect = document.getElementById('province-select');
+    const shipFeeDisplay = document.getElementById('shipping-fee-display');
+    const finalTotalDisplay = document.getElementById('final-total-display');
+
+    // Lấy số tiền GỐC ĐÃ TRỪ VOUCHER từ Django truyền vào (temp_final_total)
+    const baseAmountAfterVoucher = parseInt("{{ temp_final_total|default:0 }}");
+
+    provinceSelect.addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        const shippingFee = parseInt(selectedOption.getAttribute('data-fee')) || 0;
+
+        // Tổng cộng = (Tiền hàng - Voucher) + Phí vận chuyển
+        const finalTotal = baseAmountAfterVoucher + shippingFee;
+
+        // Cập nhật giao diện
+        shipFeeDisplay.innerHTML = shippingFee.toLocaleString('vi-VN') + 'đ';
+        finalTotalDisplay.innerHTML = finalTotal.toLocaleString('vi-VN') + 'đ';
+    });
+</script>
+{% endblock %}

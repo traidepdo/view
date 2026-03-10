@@ -3,6 +3,119 @@
 {% block body_class %}product-page{% endblock %}
 
 {% block content %}
+    <style>
+    /* Tổng thể khu vực Review */
+    .reviews-section {
+        background: #fff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        margin-top: 40px;
+    }
+
+    .reviews-section h3 {
+        font-size: 1.5rem;
+        color: #333;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    /* Từng item đánh giá */
+    .review-item {
+        padding: 20px 0;
+        border-bottom: 1px solid #eee;
+        transition: 0.3s;
+    }
+
+    .review-item:last-child {
+        border-bottom: none;
+    }
+
+    .review-user {
+        font-weight: 700;
+        color: #2d3436;
+        display: block;
+        margin-bottom: 5px;
+        font-size: 1.05rem;
+    }
+
+    .review-stars {
+        color: #ffc107; /* Màu vàng sao */
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .review-comment {
+        color: #636e72;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    /* Form đánh giá */
+    .review-form-container {
+        margin-top: 40px;
+        background: #f8fafc;
+        padding: 25px;
+        border-radius: 15px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .review-form-container h4 {
+        margin-top: 0;
+        color: #1e293b;
+        margin-bottom: 20px;
+    }
+
+    .review-form select,
+    .review-form textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        font-family: inherit;
+        outline: none;
+    }
+
+    .review-form textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    .review-form select:focus,
+    .review-form textarea:focus {
+        border-color: #ae2070;
+        box-shadow: 0 0 0 3px rgba(174, 32, 112, 0.1);
+    }
+
+    .btn-submit-review {
+        background: #ae2070;
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .btn-submit-review:hover {
+        background: #8e1a5c;
+        transform: translateY(-2px);
+    }
+
+    /* Thông báo khi chưa mua hàng */
+    .review-alert {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 15px;
+        border-radius: 8px;
+        font-size: 0.95rem;
+    }
+</style>
 <div class="container product-wrapper">
     <div class="product-main">
         <div class="product-gallery">
@@ -28,12 +141,32 @@
                 {% csrf_token %}
                 <input type="hidden" name="product_id" value="{{ product.id }}">
                 <h1>{{ product.name }}</h1>
-                <p class="price">{{ product.base_price|floatformat:0|intcomma }} ₫ </p>
+                <div class="price-section" style="margin-bottom: 20px;">
+                    {% if product.sale_price %}
+                        <div style="display: flex; align-items: baseline; gap: 15px;">
+                            <span class="sale-price" style="font-size: 2rem; color: #ae2070; font-weight: 800;">
+                                {{ product.sale_price|floatformat:0|intcomma }}₫
+                            </span>
+                            <span class="old-price" style="text-decoration: line-through; color: #94a3b8; font-size: 1.2rem;">
+                                {{ product.base_price|floatformat:0|intcomma }}₫
+                            </span>
+                            {% if product.discount_percent > 0 %}
+                                <span class="badge-discount" style="background: #fff1f2; color: #e11d48; padding: 4px 8px; border-radius: 6px; font-weight: bold; border: 1px solid #fecdd3; font-size: 0.9rem;">
+                                    -{{ product.discount_percent }}%
+                                </span>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <p class="price" style="font-size: 2rem; font-weight: 800; color: #333;">
+                            {{ product.base_price|floatformat:0|intcomma }} ₫
+                        </p>
+                    {% endif %}
+                </div>
 
                 <div class="options">
                     <div style="margin-bottom: 15px;">
                         <label for="color" style="display: block; font-weight: bold;">Màu sắc:</label>
-                        <select name="color" id="color" style="padding: 8px; width: 200px; border-radius: 4px;">
+                        <select name="color" id="color-select" onchange="updateStockLimit()" style="border: 1px solid #cbd5e1;border-radius: 12px;padding: 8px; width: 200px;">
                             {% for variant in product.variants.all|dictsort:"color" %}
                                 {% ifchanged variant.color %}
                                     <option value="{{ variant.color }}">{{ variant.color }}</option>
@@ -44,7 +177,7 @@
 
                     <div style="margin-bottom: 15px;">
                         <label for="size" style="display: block; font-weight: bold;">Kích thước (Size):</label>
-                        <select name="size" id="size" style="padding: 8px; width: 200px; border-radius: 4px;">
+                        <select name="size" id="size-select" onchange="updateStockLimit()" style="border: 1px solid #cbd5e1;border-radius: 12px;padding: 8px; width: 200px;">
                             {% for variant in product.variants.all|dictsort:"size" %}
                                 {% ifchanged variant.size %}
                                     <option value="{{ variant.size }}">{{ variant.size }}</option>
@@ -55,9 +188,12 @@
 
                     <div style="margin-bottom: 15px;">
                         <label for="quantity" style="display: block; font-weight: bold;">Số lượng:</label>
-                        <input type="number" name="quantity" id="quantity"
+                        <input type="number" name="quantity" id="quantity-input"
                                value="1" min="1"
-                               style="padding: 8px; width: 80px; border-radius: 4px; border: 1px solid #ccc;">
+                               style="padding: 8px; width: 80px; border: 1px solid #cbd5e1; border-radius: 12px; outline: none;">
+                        <p id="stock-warning" style="font-size: 0.85rem; color: #ae2070; margin-top: 5px; font-weight: bold;">
+                            Kho còn: <span id="current-stock-display">0</span>
+                        </p>
                     </div>
                 </div>
 
@@ -65,13 +201,67 @@
                     <h3>Mô tả sản phẩm</h3>
                     <p>{{ product.description }}</p>
                 </div>
-
-                <button type="submit" style="background: #28a745; color: white; border: none; padding: 15px 30px; font-size: 18px; border-radius: 5px; cursor: pointer; margin-top: 20px;">
-                    Thêm vào giỏ hàng
-                </button>
+                {% for i in product.variants.all %}
+                    {% if i.stock > 0 %}
+                    <button type="submit" style="background: #28a745; color: white; border: none; padding: 15px 30px; font-size: 18px; border-radius: 5px; cursor: pointer; margin-top: 20px;">
+                        Thêm vào giỏ hàng
+                    </button>
+                    {% else %}
+                        <span style="color: red; magrin: 10px 0px;">Đã hết hàng</span>
+                    {% endif %}
+                {% endfor %}
             </form>
         </div>
     </div>
+<div class="reviews-section">
+    <h3>💬 Đánh giá từ khách hàng</h3>
+
+    <div class="review-list">
+        {% for review in product.reviews.all %}
+            <div class="review-item">
+                <span class="review-user">👤 {{ review.user.username }}</span>
+                <span class="review-stars">
+                    {% for i in "12345" %}
+                        {% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}
+                    {% endfor %}
+                </span>
+                <p class="review-comment">{{ review.comment }}</p>
+            </div>
+        {% empty %}
+            <p style="text-align: center; color: #94a3b8; padding: 20px;">Sản phẩm chưa có đánh giá nào.</p>
+        {% endfor %}
+    </div>
+
+    {% if can_review %}
+        <div class="review-form-container">
+            <h4>🌟 Viết đánh giá của bạn</h4>
+            <form method="POST" action="{% url 'submit_review' product.id %}" class="review-form">
+                {% csrf_token %}
+                <label style="font-weight: 600; margin-bottom: 8px; display: block;">Chất lượng sản phẩm:</label>
+                <select name="rating">
+                    <option value="5">⭐⭐⭐⭐⭐ Rất tốt</option>
+                    <option value="4">⭐⭐⭐⭐ Hài lòng</option>
+                    <option value="3">⭐⭐⭐ Bình thường</option>
+                    <option value="2">⭐⭐ Tệ</option>
+                    <option value="1">⭐ Rất tệ</option>
+                </select>
+
+                <label style="font-weight: 600; margin-bottom: 8px; display: block;">Cảm nhận của bạn:</label>
+                <textarea name="comment" required placeholder="Sản phẩm vải đẹp, giao hàng nhanh..."></textarea>
+
+                <button type="submit" class="btn-submit-review">Gửi đánh giá ngay</button>
+            </form>
+        </div>
+    {% elif user.is_authenticated %}
+        <div class="review-alert" style="background: #fffbeb; color: #92400e; border: 1px solid #fde68a; margin-top: 30px;">
+            <span>ℹ️ Bạn chỉ có thể đánh giá sau khi đã mua và nhận được sản phẩm này.</span>
+        </div>
+    {% else %}
+        <div class="review-alert" style="background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; margin-top: 30px;">
+            <span>🔑 Vui lòng <a href="{% url 'login' %}" style="color: #ae2070; font-weight: bold;">đăng nhập</a> để để lại đánh giá.</span>
+        </div>
+    {% endif %}
+</div>
 <section class="products container">
     <div class="product-new">
         <h2 class="section-title">Sản phẩm tương tự</h2>
@@ -121,5 +311,69 @@
         thumbnails.forEach(img => img.classList.remove('active'));
         element.classList.add('active');
     }
+</script>
+<script>
+    // 1. Chuyển đổi ảnh chính
+    function changeImage(element) {
+        document.getElementById('featured').src = element.src;
+        let thumbnails = document.querySelectorAll('.thumbnail-list img');
+        thumbnails.forEach(img => img.classList.remove('active'));
+        element.classList.add('active');
+    }
+
+    // 2. Tạo bản đồ tồn kho từ Django (Key là "Màu_Size")
+    const variantStock = {
+        {% for variant in product.variants.all %}
+            "{{ variant.color }}_{{ variant.size }}": {{ variant.stock }},
+        {% endfor %}
+    };
+
+    const colorSelect = document.getElementById('color-select');
+    const sizeSelect = document.getElementById('size-select');
+    const qtyInput = document.getElementById('quantity-input');
+    const stockDisplay = document.getElementById('current-stock-display');
+
+    // 3. Hàm cập nhật giới hạn tồn kho khi đổi option
+    function updateStockLimit() {
+        const key = colorSelect.value + "_" + sizeSelect.value;
+        const stock = variantStock[key] || 0;
+
+        // Cập nhật text hiển thị
+        stockDisplay.innerText = stock;
+
+        // Cập nhật thuộc tính max của ô input
+        qtyInput.max = stock;
+
+        // Nếu số lượng hiện tại lớn hơn kho, tự động giảm về bằng kho
+        if (parseInt(qtyInput.value) > stock) {
+            qtyInput.value = stock;
+        }
+
+        // Nếu hết hàng (stock = 0), reset về 0, ngược lại tối thiểu là 1
+        if (stock <= 0) {
+            qtyInput.value = 0;
+            qtyInput.min = 0;
+        } else {
+            qtyInput.min = 1;
+            if (qtyInput.value == 0) qtyInput.value = 1;
+        }
+    }
+
+    // 4. Chặn nhập tay số lượng lớn hơn kho
+    qtyInput.addEventListener('input', function() {
+        const max = parseInt(this.max);
+        const val = parseInt(this.value);
+
+        if (val > max) {
+            alert("Rất tiếc, trong kho chỉ còn " + max + " sản phẩm.");
+            this.value = max;
+        }
+        if (val < parseInt(this.min)) {
+            this.value = this.min;
+        }
+    });
+
+    // Chạy hàm cập nhật ngay khi trang vừa load xong
+    document.addEventListener('DOMContentLoaded', updateStockLimit);
 </script>
 {% endblock %}

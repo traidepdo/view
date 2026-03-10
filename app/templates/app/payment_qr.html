@@ -1,0 +1,15 @@
+<div style="text-align: center; margin-top: 50px;">
+    <h2>Quét mã để thanh toán đơn hàng {{ order.order_code }}</h2>
+    <p>Tổng tiền: <strong>{{ order.total_price|floatformat:0 }} VNĐ</strong></p>
+
+    <img src="https://img.vietqr.io/image/momo-{{ momo_phone }}-qr_only.png?amount={{ order.total_price|floatformat:0 }}&addInfo={{ order.order_code }}&accountName={{ account_name|urlencode }}"
+     style="width: 300px; border: 5px solid #ae2070; border-radius: 15px;"
+     alt="QR MoMo Thanh Toán">
+
+    <div style="margin-top: 20px; color: #555;">
+        <p>Người nhận: <strong>{{ account_name }}</strong></p>
+        <p>Nội dung: <strong>{{ order.order_code }}</strong></p>
+    </div>
+
+    <a href="/">Quay lại Trang chủ</a>
+</div>

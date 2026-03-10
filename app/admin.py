@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Product, ProductImage, ProductVariant, Reviews, Order, OrderItem
+from .models import Category, Product, ProductImage, ProductVariant, Reviews, Order, OrderItem, ShippingProvince, Voucher
 
 # Register your models here.
 
@@ -32,15 +32,27 @@ class ReviewsAdmin(admin.ModelAdmin):
     list_filter = ('rating', 'created_at', 'product')
     search_fields = ('product__name', 'user__username', 'comment')
 
+
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'full_name', 'total_amount', 'status', 'created_at')
+    # Đổi total_amount thành total_price
+    list_display = ('order_code', 'user', 'full_name', 'status', 'created_at')
     list_filter = ('status', 'created_at')
-    search_fields = ('full_name', 'address', 'user__username')
+    search_fields = ('order_code', 'full_name', 'address', 'user__username')
     readonly_fields = ('created_at',)
+
+    # Thêm tính năng xác nhận nhanh đơn hàng
+    actions = ['mark_as_completed']
+
+    @admin.action(description='Xác nhận đơn hàng đã thanh toán')
+    def mark_as_completed(self, request, queryset):
+        queryset.update(status='completed')
 
 @admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):
     list_display = ('order', 'variant', 'quantity', 'price')
     list_filter = ('order', 'variant__product')
     search_fields = ('order__full_name', 'variant__product__name')
+
+admin.site.register(ShippingProvince)
+admin.site.register(Voucher)

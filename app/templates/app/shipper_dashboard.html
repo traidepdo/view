@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Trạm Shipper - Giao Hàng</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #ae2070;
+            --blue-delivery: #2196F3;
+            --green-success: #4CAF50;
+            --bg-body: #f4f7f6;
+            --text-dark: #2d3436;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            margin: 0;
+            padding: 0;
+            color: var(--text-dark);
+        }
+
+        .container {
+            max-width: 500px; /* Tối ưu cho Mobile */
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header-title {
+            text-align: center;
+            color: var(--text-dark);
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .sub-title {
+            text-align: center;
+            color: #636e72;
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+        }
+
+        /* Thẻ đơn hàng */
+        .order-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.03);
+            transition: transform 0.2s;
+        }
+
+        .order-card:active {
+            transform: scale(0.98);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px dashed #eee;
+            padding-bottom: 10px;
+        }
+
+        .order-id {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #2d3436;
+        }
+
+        .order-price {
+            color: var(--primary-color);
+            font-weight: 800;
+            font-size: 1.2rem;
+        }
+
+        /* Chi tiết thông tin */
+        .info-row {
+            margin: 12px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .info-icon {
+            font-size: 1.1rem;
+            min-width: 25px;
+        }
+
+        .info-text {
+            font-size: 0.95rem;
+            line-height: 1.4;
+            color: #444;
+        }
+
+        .phone-link {
+            color: var(--blue-delivery);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .note-box {
+            background: #fff8fb;
+            border-left: 4px solid var(--primary-color);
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin: 15px 0;
+            font-size: 0.85rem;
+            color: #d63031;
+        }
+
+        /* Nút bấm */
+        .btn {
+            width: 100%;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .btn-pickup {
+            background: var(--blue-delivery);
+            color: white;
+        }
+
+        .btn-pickup:hover { background: #1976D2; }
+
+        .btn-success {
+            background: var(--green-success);
+            color: white;
+        }
+
+        .btn-success:hover { background: #388E3C; }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #b2bec3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 class="header-title">Trạm Giao Hàng</h2>
+    <p class="sub-title">Danh sách đơn hàng cần giao trong ngày</p>
+
+    {% for order in orders %}
+    <div class="order-card">
+        <div class="order-header">
+            <span class="order-id">#{{ order.order_code }}</span>
+            <span class="order-price">{{ order.final_total|floatformat:0 }}đ</span>
+        </div>
+
+        <div class="info-row">
+            <span class="info-icon">👤</span>
+            <div class="info-text"><strong>{{ order.full_name }}</strong></div>
+        </div>
+
+        <div class="info-row">
+            <span class="info-icon">📞</span>
+            <div class="info-text">
+                <a href="tel:{{ order.phone_number }}" class="phone-link">{{ order.phone_number }}</a>
+                <span style="font-size: 0.8rem; color: #999; display: block;">(Nhấn để gọi)</span>
+            </div>
+        </div>
+
+        <div class="info-row">
+            <span class="info-icon">📍</span>
+            <div class="info-text">
+                {{ order.address }}, <strong>{{ order.province.name }}</strong>
+            </div>
+        </div>
+
+        {% if order.note %}
+        <div class="note-box">
+            <strong>Ghi chú:</strong> {{ order.note }}
+        </div>
+        {% endif %}
+
+        <div style="margin-top: 20px;">
+            <form method="POST" action="{% url 'update_delivery_status' order.id %}">
+                {% csrf_token %}
+                {% if order.status == 'confirmed' %}
+                    <input type="hidden" name="status" value="shipping">
+                    <button type="submit" class="btn btn-pickup">
+                        🚚 NHẬN ĐƠN GIAO NGAY
+                    </button>
+                {% elif order.status == 'shipping' %}
+                    <input type="hidden" name="status" value="delivered">
+                    <button type="submit" class="btn btn-success" onclick="return confirm('Xác nhận đã thu tiền và giao hàng thành công?')">
+                        ✅ HOÀN THÀNH GIAO HÀNG
+                    </button>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+    {% empty %}
+    <div class="empty-state">
+        <div style="font-size: 4rem; margin-bottom: 10px;">🏝️</div>
+        <p>Tuyệt vời! Đã hoàn thành hết đơn hàng.</p>
+    </div>
+    {% endfor %}
+</div>
+
+</body>
+</html>

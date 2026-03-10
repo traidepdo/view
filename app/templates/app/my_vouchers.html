@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block body_class %}product-cart{% endblock %}
+
+{% block content %}
+<div class="product-wrapper">
+    <h2 style="text-align: center; color: #ae2070; margin-bottom: 30px;">KHO MÃ GIẢM GIÁ</h2>
+    
+    <div style="display: grid; grid-gap: 20px; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));">
+        {% for v in my_vouchers %}
+        <div style="display: flex; background: #fff; border: 1px solid #eee; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+            <div style="background: #ae2070; color: white; padding: 20px; text-align: center; display: flex; flex-direction: column; justify-content: center; min-width: 120px;">
+                <span style="font-size: 1.2rem; font-weight: bold;">GIẢM</span>
+                <span style="font-size: 1.4rem; font-weight: bold;">{{ v.discount_amount|floatformat:0|intcomma }}đ</span>
+            </div>
+
+            <div style="padding: 15px; flex-grow: 1; position: relative;">
+                <h3 style="margin: 0 0 5px 0; font-size: 1.1rem; color: #333;">Mã: <span style="color: #ae2070;">{{ v.code }}</span></h3>
+                <p style="margin: 5px 0; font-size: 0.9rem; color: #666;">Đơn tối thiểu: {{ v.min_order_value|floatformat:0|intcomma }}đ</p>
+                <p style="margin: 5px 0; font-size: 0.8rem; color: #999;">Hết hạn: {{ v.valid_to|date:"d/m/Y H:i" }}</p>
+                
+                <button onclick="copyToClipboard('{{ v.code }}')" 
+                        style="margin-top: 10px; background: #333; color: white; border: none; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">
+                    Sao chép mã
+                </button>
+            </div>
+        </div>
+        {% empty %}
+        <p style="text-align: center; grid-column: 1/-1; color: #888;">Hiện tại không có mã giảm giá nào.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        alert("Đã sao chép mã: " + text);
+    });
+}
+</script>
+{% endblock %}

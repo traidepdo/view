@@ -664,3 +664,12 @@ def my_vouchers(request):
     return render(request, 'app/my_vouchers.html', {
         'my_vouchers': all_vouchers
     })
+
+def return_policy(request):
+    return render(request, 'app/return-policy.html')
+def size_guide(request):
+    return render(request, 'app/size-guide.html')
+def recruitment(request):
+    return render(request, 'app/recruitment.html')
+def store_system(request):
+    return render(request, 'app/store-system.html')

@@ -27,6 +27,9 @@ urlpatterns = [
     path('cancel-order/<int:order_id>/', views.cancel_order, name='cancel_order'),
     path('apply-voucher/', views.apply_voucher, name='apply_voucher'),
     path('my-vouchers/', views.my_vouchers, name='my_vouchers'),
-path('remove-voucher/', views.remove_voucher, name='remove_voucher'),
-
+    path('remove-voucher/', views.remove_voucher, name='remove_voucher'),
+    path('chinh-sach-doi-tra/', views.return_policy, name='return_policy'),
+    path('huong-dan-size/', views.size_guide, name='size_guide'),
+    path('tuyen-dung/', views.recruitment, name='recruitment'),
+    path('he-thong-cua-hang/', views.store_system, name='store_system'),
 ]
